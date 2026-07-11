@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Matemática - 6º Ano</title>
+    <style>
+        /* --- O CSS DO JOGO AQUI --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .game-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .score-container {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #4caf50;
+        }
+
+        .quiz-box {
+            margin-bottom: 20px;
+        }
+
+        #question {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        #answer-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #answer-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        #submit-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        #submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .feedback {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            height: 24px;
+        }
+
+        .correct {
+            color: #2ecc71;
+        }
+
+        .wrong {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Desafio de Matemática (6º Ano)</h1>
+        <div class="score-container">
+            <span>Pontuação: <strong id="score">0</strong></span>
+        </div>
+        
+        <div class="quiz-box">
+            <p id="question">Carregando pergunta...</p>
+            <input type="number" id="answer-input" placeholder="Sua resposta">
+            <button id="submit-btn">Enviar</button>
+        </div>
+
+        <p id="feedback" class="feedback"></p>
+    </div>
+
+    <script>
+        // --- O JAVASCRIPT DO JOGO AQUI ---
+        const questionElement = document.getElementById('question');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const scoreElement = document.getElementById('score');
+        const feedbackElement = document.getElementById('feedback');
+
+        let score = 0;
+        let correctAnswer = 0;
+
+        function generateQuestion() {
+            answerInput.value = '';
+            const operations = ['+', '-', '*', '/'];
+            const randomOp = operations[Math.floor(Math.random() * operations.length)];
+            let num1, num2;
+
+            if (randomOp === '+') {
+                num1 = Math.floor(Math.random() * 100) + 10;
+                num2 = Math.floor(Math.random() * 100) + 10;
+                correctAnswer = num1 + num2;
+                questionElement.innerText = `Quanto é ${num1} + ${num2}?`;
+            } 
+            else if (randomOp === '-') {
+                num1 = Math.floor(Math.random() * 100) + 50;
+                num2 = Math.floor(Math.random() * 50) + 1;
+                correctAnswer = num1 - num2;
+                questionElement.innerText = `Quanto é ${num1} - ${num2}?`;
+            } 
+            else if (randomOp === '*') {
+                num1 = Math.floor(Math.random() * 12) + 2;
+                num2 = Math.floor(Math.random() * 11) + 2;
+                correctAnswer = num1 * num2;
+                questionElement.innerText = `Quanto é ${num1} x ${num2}?`;
+            } 
+            else if (randomOp === '/') {
+                num2 = Math.floor(Math.random() * 9) + 2; 
+                correctAnswer = Math.floor(Math.random() * 10) + 2;
+                num1 = num2 * correctAnswer; 
+                questionElement.innerText = `Quanto é ${num1} ÷ ${num2}?`;
+            }
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+
+            if (isNaN(userAnswer)) {
+                feedbackElement.innerText = "Por favor, digite um número!";
+                feedbackElement.className = "feedback wrong";
+                return;
+            }
+
+            if (userAnswer === correctAnswer) {
+                score += 10;
+                scoreElement.innerText = score;
+                feedbackElement.innerText = "Acertou! Parabéns! 🎉";
+                feedbackElement.className = "feedback correct";
+                setTimeout(generateQuestion, 1500);
+            } else {
+                feedbackElement.innerText = `Errado! A resposta era ${correctAnswer}.`;
+                feedbackElement.className = "feedback wrong";
+                setTimeout(generateQuestion, 2000);
+            }
+        }
+
+        submitBtn.addEventListener('click', checkAnswer);
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        generateQuestion();
+    </script>
+</body>
+</html>
+
